@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HABLA — Spanish 4 Honors</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07070d;--surf:#0d0d18;--card:#131320;--card2:#191928;
+  --bdr:#1e1e30;--bdr2:#2a2a3e;
+  --txt:#f0f0f8;--mut:#4a4a6a;--soft:#8888aa;--mid:#b0b0c8;
+  --accent:#e05c5c;
+  --c1:#e05c5c;--c2:#4fc3f7;--c3:#a78bfa;--c4:#34d399;--c5:#fb7185;--c6:#c084fc;--c7:#ff8c42;
+}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(224,92,92,.25);color:var(--txt)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:2px}
+
+.hero{position:relative;padding:2rem 1.5rem 1.75rem;overflow:hidden;border-bottom:1px solid var(--bdr)}
+.hero::before{content:'';position:absolute;top:-80px;left:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(224,92,92,.06) 0%,transparent 65%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-60px;right:-60px;width:400px;height:400px;background:radial-gradient(circle,rgba(79,195,247,.04) 0%,transparent 65%);pointer-events:none}
+.hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-family:monospace;letter-spacing:3px;text-transform:uppercase;color:var(--accent);background:rgba(224,92,92,.08);border:1px solid rgba(224,92,92,.2);border-radius:2px;padding:4px 10px;margin-bottom:14px}
+.hero-title{font-family:monospace;font-size:clamp(38px,8vw,62px);font-weight:900;letter-spacing:-1px;line-height:.95;color:var(--txt);margin-bottom:10px}
+.hero-title .a{color:var(--accent)}
+.hero-sub{font-size:14px;color:var(--soft);line-height:1.65;max-width:420px}
+
+.axie{flex-shrink:0;cursor:pointer;position:relative;user-select:none}
+.axie svg{transition:transform .35s cubic-bezier(.34,1.56,.64,1);display:block}
+.axie:hover svg{transform:rotate(-8deg) scale(1.08) translateY(-3px)}
+.axie:active svg{transform:scale(.95)}
+.axie-msg{position:absolute;right:90px;top:-4px;background:var(--card2);border:1px solid var(--bdr2);border-radius:10px 10px 0 10px;padding:9px 13px;font-size:12px;color:var(--mid);line-height:1.5;max-width:200px;opacity:0;transform:scale(.85) translateY(4px);transition:all .22s cubic-bezier(.34,1.56,.64,1);pointer-events:none;z-index:20;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.axie-msg.on{opacity:1;transform:scale(1) translateY(0)}
+.axie-msg::after{content:'';position:absolute;right:-7px;top:10px;border:4px solid transparent;border-left-color:var(--bdr2)}
+
+.stats{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.stat{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.035);border:1px solid var(--bdr);border-radius:20px;padding:5px 11px;font-size:12px;color:var(--soft)}
+.stat b{color:var(--txt);font-weight:600}
+
+.xp-wrap{margin-top:12px}
+.xp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-family:monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut)}
+.xp-top span{color:var(--accent)}
+.xp-track{height:5px;background:var(--bdr);border-radius:3px;overflow:hidden}
+.xp-fill{height:100%;border-radius:3px;transition:width .7s cubic-bezier(.34,1.56,.64,1)}
+
+#app{max-width:860px;margin:0 auto}
+.page{padding:1.25rem 1rem 5rem}
+
+.tabbar{display:flex;border-bottom:1px solid var(--bdr);overflow-x:auto;background:var(--surf);position:sticky;top:0;z-index:40;scrollbar-width:none}
+.tabbar::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;border-bottom:2px solid transparent;padding:12px 14px;font-size:10px;font-family:monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);white-space:nowrap;transition:color .15s;flex-shrink:0}
+.tab.on{border-bottom-color:var(--accent);color:var(--accent);font-weight:700}
+.tab:hover:not(.on){color:var(--soft)}
+
+.btn{background:transparent;border:1px solid var(--bdr2);border-radius:4px;padding:8px 16px;font-size:13px;color:var(--mid);transition:all .15s}
+.btn:hover{border-color:var(--soft);color:var(--txt);background:rgba(255,255,255,.03)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+.btn-hi{background:rgba(224,92,92,.1);border:1px solid rgba(224,92,92,.35);border-radius:6px;padding:11px 22px;font-size:14px;font-weight:600;color:var(--accent);transition:all .2s}
+.btn-hi:hover{background:rgba(224,92,92,.18);border-color:rgba(224,92,92,.6);transform:translateY(-1px);box-shadow:0 4px 16px rgba(224,92,92,.15)}
+.btn-hi:active{transform:scale(.98) translateY(0)}
+.btn-hi:disabled{opacity:.35;cursor:not-allowed;pointer-events:none;transform:none}
+.btn-full{display:block;width:100%;text-align:center}
+.btn-del{color:var(--c5);border-color:rgba(251,113,133,.2);font-size:11px;padding:4px 10px}
+.btn-del:hover{background:rgba(251,113,133,.08);border-color:rgba(251,113,133,.4)}
+
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:16px 18px}
+.card-hi{border-top:2px solid}
+.scard{border-left:3px solid;display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;padding:13px 16px;cursor:pointer;border-radius:6px;transition:background .15s,transform .15s}
+.scard:hover{background:var(--card2);transform:translateX(2px)}
+
+.ugrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:8px}
+.utile{border:1px solid var(--bdr);border-radius:8px;padding:18px 16px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;background:var(--card)}
+.utile:hover{border-color:var(--bdr2);background:var(--card2);transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.utile-ghost{font-family:monospace;font-size:44px;font-weight:900;line-height:1;opacity:.07;position:absolute;top:6px;right:10px;letter-spacing:-2px;user-select:none}
+
+.ring{position:relative;flex-shrink:0}
+.ring svg{transform:rotate(-90deg);display:block}
+.ring-n{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:monospace;font-size:9px;font-weight:700;line-height:1;text-align:center}
+
+.sh{display:flex;align-items:baseline;gap:12px;padding-bottom:9px;border-bottom:1px solid var(--bdr);margin:26px 0 12px}
+.sh-n{font-family:monospace;font-size:34px;font-weight:900;opacity:.08;line-height:1;flex-shrink:0}
+.sh-t{font-family:monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+
+.fc-scene{perspective:900px;cursor:pointer;margin-bottom:16px}
+.fc-inner{position:relative;min-height:200px;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.fc-inner.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid var(--bdr);border-radius:8px;padding:28px 24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:var(--card)}
+.fc-face:hover{border-color:var(--bdr2)}
+.fc-back{transform:rotateY(180deg);background:var(--card2)}
+
+.qopt{padding:10px 14px;border-radius:4px;border:1px solid var(--bdr);cursor:pointer;font-size:13px;color:var(--soft);transition:all .15s;margin-bottom:7px;line-height:1.5}
+.qopt:hover:not(.locked){background:rgba(255,255,255,.03);border-color:var(--bdr2);color:var(--mid)}
+.qopt.locked{cursor:default}
+
+.conj-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.conj-cell{background:var(--surf);border:1px solid var(--bdr);border-radius:4px;padding:10px 14px}
+.conj-pro{font-size:10px;font-family:monospace;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.conj-form{font-size:15px;font-weight:600;color:var(--txt)}
+.conj-input{background:transparent;border:none;outline:none;font-size:15px;font-weight:600;color:var(--accent);width:100%;font-family:inherit}
+.conj-input::placeholder{color:var(--mut);font-weight:400}
+
+.bubble-u{background:rgba(79,195,247,.09);border:1px solid rgba(79,195,247,.22);color:#6ed4f8;padding:10px 15px;border-radius:10px 10px 2px 10px;font-size:13px;line-height:1.65;max-width:78%}
+.bubble-a{background:var(--card);border:1px solid var(--bdr);color:var(--mid);padding:12px 15px;border-radius:10px 10px 10px 2px;font-size:13px;line-height:1.75;max-width:82%}
+.cbline{display:flex;gap:7px;padding:3px 0;align-items:flex-start}
+.cbline .arr{color:var(--accent);font-size:10px;padding-top:4px;flex-shrink:0}
+
+.setup{max-width:440px;margin:3rem auto;padding:0 1rem}
+.setup-steps{background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.18);border-radius:6px;padding:14px 18px;font-size:12px;color:var(--soft);line-height:1.95;margin-bottom:18px}
+
+.lbl{font-family:monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--mut)}
+.g2{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:11px}
+.g3{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:9px}
+.tip-box{background:rgba(224,92,92,.05);border:1px solid rgba(224,92,92,.18);border-left:3px solid var(--accent);border-radius:4px;padding:13px 17px}
+ul.blist{padding:0;list-style:none;margin:0}
+ul.blist li{padding:4px 0 4px 16px;position:relative;color:var(--soft);font-size:12px;line-height:1.65;border-bottom:1px solid rgba(255,255,255,.025)}
+ul.blist li::before{content:'›';position:absolute;left:0;color:var(--mut)}
+
+.unav{position:fixed;bottom:0;left:0;right:0;background:rgba(6,6,12,.97);border-top:1px solid var(--bdr);display:flex;justify-content:center;z-index:100;backdrop-filter:blur(16px)}
+.unav-btn{background:none;border:none;border-top:2px solid transparent;padding:7px 0;flex:1;max-width:100px;font-family:monospace;font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.unav-btn.on{border-top-color:var(--accent);color:var(--accent)}
+.unav-n{font-size:17px;font-weight:900;font-family:monospace;line-height:1}
+.has-unav{padding-bottom:58px}
+
+.cf{position:fixed;width:7px;height:7px;border-radius:2px;pointer-events:none;z-index:9999;animation:cffall linear forwards}
+@keyframes cffall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(760deg);opacity:0}}
+
+.toast{position:fixed;top:18px;right:18px;background:rgba(224,92,92,.12);border:1px solid rgba(224,92,92,.35);border-radius:6px;padding:9px 15px;font-family:monospace;font-size:12px;color:var(--accent);z-index:9998;animation:tin .25s ease,tout .25s ease 1.75s forwards;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+@keyframes tin{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tout{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(16px)}}
+
+.err{color:var(--c5);font-size:12px;padding:6px 0;font-family:monospace}
+.spin{width:15px;height:15px;border:2px solid var(--bdr2);border-top-color:var(--c2);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fadein{animation:fadein .3s ease both}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.scalein{animation:scalein .25s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes scalein{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+
+@media(max-width:540px){
+  .hero{padding:1.5rem 1rem 1.25rem}
+  .hero-title{font-size:clamp(32px,9vw,48px)}
+  .ugrid,.g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr}
+  .conj-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div style="flex:1;min-width:0">
+        <div class="hero-eyebrow">🇪🇸 Spanish 4 Honors · CoCo's Study Tool</div>
+        <div class="hero-title"><span class="a">HABLA</span></div>
+        <div class="hero-sub">Turn vocabulary and grammar into fluency.</div>
+      </div>
+      <div class="axie" onclick="axieTap()" id="axie">
+        <svg width="82" height="82" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="40" cy="51" rx="21" ry="19" fill="#12122a" stroke="var(--accent)" stroke-width="1.4"/>
+          <ellipse cx="40" cy="28" rx="18" ry="17" fill="#12122a" stroke="var(--accent)" stroke-width="1.4"/>
+          <polygon points="25,15 20,4 29,13" fill="var(--accent)" opacity=".9"/>
+          <polygon points="55,15 60,4 51,13" fill="var(--accent)" opacity=".9"/>
+          <rect x="23" y="12" width="34" height="5" rx="1.5" fill="var(--accent)"/>
+          <rect x="36" y="7" width="8" height="6" rx="1" fill="var(--accent)"/>
+          <line x1="57" y1="14" x2="62" y2="21" stroke="var(--accent)" stroke-width="2"/>
+          <circle cx="62" cy="22" r="2.5" fill="var(--accent)"/>
+          <circle cx="32" cy="27" r="6.5" fill="#08081a" stroke="var(--c2)" stroke-width="1.5"/>
+          <circle cx="48" cy="27" r="6.5" fill="#08081a" stroke="var(--c2)" stroke-width="1.5"/>
+          <circle cx="33" cy="26" r="3.2" fill="var(--c2)"/>
+          <circle cx="49" cy="26" r="3.2" fill="var(--c2)"/>
+          <circle cx="34.2" cy="24.8" r="1.2" fill="white" opacity=".85"/>
+          <circle cx="50.2" cy="24.8" r="1.2" fill="white" opacity=".85"/>
+          <polygon points="40,33 37,37 43,37" fill="var(--accent)"/>
+          <ellipse cx="19" cy="53" rx="7" ry="11" fill="var(--accent)" opacity=".15" transform="rotate(-12 19 53)"/>
+          <ellipse cx="61" cy="53" rx="7" ry="11" fill="var(--accent)" opacity=".15" transform="rotate(12 61 53)"/>
+          <line x1="32" y1="68" x2="27" y2="75" stroke="var(--accent)" stroke-width="1.8"/>
+          <line x1="32" y1="68" x2="32" y2="76" stroke="var(--accent)" stroke-width="1.8"/>
+          <line x1="32" y1="68" x2="37" y2="75" stroke="var(--accent)" stroke-width="1.8"/>
+          <line x1="48" y1="68" x2="43" y2="75" stroke="var(--accent)" stroke-width="1.8"/>
+          <line x1="48" y1="68" x2="48" y2="76" stroke="var(--accent)" stroke-width="1.8"/>
+          <line x1="48" y1="68" x2="53" y2="75" stroke="var(--accent)" stroke-width="1.8"/>
+        </svg>
+        <div class="axie-msg" id="axie-msg">¡Ánimo! Let's practice 🦉</div>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="xp-wrap" id="xp"></div>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
+const MODEL        = 'claude-sonnet-4-20250514';
+const AXIE_DURATION = 3500;
+const AC           = ['#e05c5c','#4fc3f7','#a78bfa','#34d399','#fb7185','#c084fc'];
+const ac           = i => AC[i % AC.length];
+const PALETTE      = ['#e05c5c','#4fc3f7','#a78bfa','#34d399','#fb7185','#c084fc','#ff8c42'];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MESSAGE QUEUE
+// ─────────────────────────────────────────────────────────────────────────────
+const axieQ = { msgs:[], busy:false, _at:null };
+
+function axieEnqueue(msg) { axieQ.msgs.push(msg); axieFlush(); }
+function axieFlush() {
+  if (axieQ.busy || !axieQ.msgs.length) return;
+  axieQ.busy = true;
+  axieSay(axieQ.msgs.shift());
+  setTimeout(() => { axieQ.busy = false; axieFlush(); }, AXIE_DURATION);
+}
+function axieAfterQueue(cb) {
+  const check = () => (!axieQ.busy && !axieQ.msgs.length) ? cb() : setTimeout(check, 100);
+  setTimeout(check, 100);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
+const state = {
+  apiKey:   '',
+  accent:   '#e05c5c',
+  sessions: [],
+  xp:       { xp:0, lv:1, streak:0, last:'', sess:0, cards:0 },
+  perf:     {},
+
+  page:     'home',
+  _setupErr:'',
+  htab:     'sessions',
+  tab:      'vocab',
+  unitId:   1,
+  curIdx:   -1,
+  focusUnit: null,
+  lastDrill: 0,
+  axIdx:    0,
+  fcIdx:    0,
+  fcFlipped:false,
+  chatH:    [],
+  qIdx:     0,
+
+  quiz:      { picks:{}, checked:{}, score:0, total:0, _answers:[], _explanations:[] },
+  drillQuiz: { picks:{}, checked:{}, score:0, total:0 },
+};
+
+const cur = () => state.sessions[state.curIdx] ?? null;
+
+function loadState() {
+  state.apiKey    = localStorage.getItem('habla-key')      || '';
+  state.accent    = localStorage.getItem('habla-accent')   || '#e05c5c';
+  state.sessions  = JSON.parse(localStorage.getItem('habla-sessions') || '[]');
+  const saved     = JSON.parse(localStorage.getItem('habla-xp') || 'null');
+  if (saved) state.xp = saved;
+  state.perf      = JSON.parse(localStorage.getItem('habla-perf') || '{}');
+  state.lastDrill = parseInt(localStorage.getItem('habla-lastdrill') || '0');
+  state.qIdx      = Math.floor(Math.random() * QUOTES.length);
+  document.documentElement.style.setProperty('--accent', state.accent);
+  document.documentElement.style.setProperty('--c1',     state.accent);
+}
+
+function persistSessions()  { localStorage.setItem('habla-sessions',   JSON.stringify(state.sessions)); }
+function persistXP()        { localStorage.setItem('habla-xp',         JSON.stringify(state.xp)); }
+function persistPerf()      { localStorage.setItem('habla-perf',       JSON.stringify(state.perf)); }
+function persistLastDrill() { localStorage.setItem('habla-lastdrill',  String(state.lastDrill)); }
+
+function updateCurSession(patch) {
+  if (state.curIdx < 0) return;
+  state.sessions[state.curIdx] = { ...state.sessions[state.curIdx], ...patch };
+  persistSessions();
+}
+
+function resetApiKey() {
+  if (!confirm('Reset API key?')) return;
+  localStorage.removeItem('habla-key');
+  state.apiKey = ''; state.page = 'setup'; state._setupErr = '';
+  render();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UNITS — Spanish 4 Honors / AP Spanish
+// ─────────────────────────────────────────────────────────────────────────────
+const UNITS = [
+  {id:1, lbl:'Presente & Ser/Estar',  col:'#e05c5c', ex:'High',    em:'🔴', kw:['presente','ser','estar','indicativo','regular','irregular']},
+  {id:2, lbl:'Pretérito & Imperfecto',col:'#4fc3f7', ex:'High',    em:'🔵', kw:['pretérito','imperfecto','preterite','imperfect','pasado','past']},
+  {id:3, lbl:'Subjuntivo',            col:'#a78bfa', ex:'V.High',  em:'🟣', kw:['subjuntivo','subjunctive','querer que','esperar','ojalá','desear']},
+  {id:4, lbl:'Por vs Para & Prep.',   col:'#34d399', ex:'Medium',  em:'🟢', kw:['por','para','preposición','preposition','desde','hasta','sin']},
+  {id:5, lbl:'Vocabulario Temático',  col:'#fb7185', ex:'High',    em:'🩷', kw:['vocabulario','vocabulary','tema','tema cultural','identidad','familia']},
+  {id:6, lbl:'AP Themes & Writing',   col:'#c084fc', ex:'V.High',  em:'🟡', kw:['ap','ensayo','essay','argument','persuasive','tema global','cultura']},
+];
+
+function detectUnit(s) {
+  const tx = [s.title, s.summary, ...(s.vocab||[]).map(v=>v.word+' '+v.definition),
+    ...(s.grammar?.rules||[]).map(r=>r.name+' '+r.explanation)].join(' ').toLowerCase();
+  let best = UNITS[4], top = 0;
+  for (const u of UNITS) {
+    const sc = u.kw.filter(k => tx.includes(k)).length;
+    if (sc > top) { top = sc; best = u; }
+  }
+  return best;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BEHAVIORAL ENGINE
+// ─────────────────────────────────────────────────────────────────────────────
+function getTier(lv) {
+  if (lv < 3)  return 'Principiante';
+  if (lv < 6)  return 'Estudiante';
+  if (lv < 10) return 'Avanzado';
+  return 'Fluente';
+}
+function streakBonus(streak) { return Math.min(1 + streak * 0.05, 1.5); }
+function sessionsToday() {
+  const td = new Date().toDateString();
+  return state.sessions.filter(s => new Date(s.date).toDateString() === td).length;
+}
+const xpNeeded = l => l * 120;
+
+function addXP(pts, msg) {
+  const G        = state.xp;
+  const streak   = streakBonus(G.streak);
+  const count    = sessionsToday();
+  const momentum = Math.min(1 + (count - 1) * 0.1, 1.4);
+  const actual   = Math.round(pts * streak * momentum);
+  G.xp += actual;
+  const parts = [`+${actual} XP  ${msg}`];
+  if (G.streak >= 2) parts.push(`🔥 +${Math.round((streak-1)*100)}% racha`);
+  if (momentum > 1)  parts.push(`⚡ +${Math.round((momentum-1)*100)}% impulso`);
+  showToast(parts.join('  '));
+  let leveled = false;
+  while (G.xp >= xpNeeded(G.lv)) { G.xp -= xpNeeded(G.lv); G.lv++; leveled = true; }
+  if (leveled) {
+    renderHeroFullBar();
+    setTimeout(() => {
+      launchConfetti('medium');
+      const msgs = {
+        'Principiante': '🏆 Principiante — estás construyendo el hábito. ¡Sigue!',
+        'Estudiante':   '🏆 Estudiante — vas más adelante de lo esperado.',
+        'Avanzado':     '🏆 Avanzado — aquí es donde muchos se rinden. Tú no.',
+        'Fluente':      '🏆 Fluente — estás en compañía especial.',
+      };
+      axieEnqueue(msgs[getTier(G.lv)]);
+    }, 400);
+  }
+  persistXP();
+  if (!leveled) renderHero();
+}
+
+function checkStreak() {
+  const td = new Date().toDateString();
+  const yd = new Date(Date.now() - 86400000).toDateString();
+  if (state.xp.last === td) return;
+  const wasStreak = state.xp.streak;
+  const continued = state.xp.last === yd;
+  state.xp.streak = continued ? state.xp.streak + 1 : 1;
+  state.xp.last   = td;
+  if (!continued && wasStreak > 0) {
+    setTimeout(() => axieSay('⚠️ Casi lo pierdes. Reinicio — pero volviste.'), 800);
+  } else if ([3,7,14].includes(state.xp.streak)) {
+    setTimeout(() => { launchConfetti('medium'); axieEnqueue(`🔥 ¡${state.xp.streak} días seguidos! Estás enfocada.`); }, 150);
+  }
+  persistXP();
+}
+
+function getUnitProfile() {
+  const profile = {};
+  for (const u of UNITS) {
+    const us       = state.sessions.filter(s => s.unit?.id === u.id);
+    const perf     = state.perf[u.id];
+    const avgScore = perf?.total > 0 ? perf.correct / perf.total : null;
+    const last     = us.length ? Math.max(...us.map(s => new Date(s.date).getTime())) : null;
+    const daysSince= last ? Math.floor((Date.now()-last)/86400000) : Infinity;
+    profile[u.id]  = { ...u, sessions:us.length, avgScore, daysSince,
+      urgency: ((avgScore!=null?(1-avgScore):0.5)) + (Math.min(daysSince,30)/45),
+      ignored: perf?.ignored ?? 0 };
+  }
+  return profile;
+}
+
+function getWeakestUnit() {
+  const p = Object.values(getUnitProfile());
+  const unstudied = p.filter(u => u.sessions === 0);
+  if (unstudied.length) return unstudied[0];
+  return p.sort((a,b) => b.urgency - a.urgency)[0];
+}
+
+function renderAdaptivePressure() {
+  if (window._pressureFired) return;
+  window._pressureFired = true;
+  const G = state.xp;
+  const weakest = getWeakestUnit();
+  const p = weakest ? getUnitProfile()[weakest.id] : null;
+  if (!weakest || state.sessions.length < 2) {
+    if (G.streak >= 3) setTimeout(() => axieSay(G.streak >= 7
+      ? `📈 ${G.streak} días seguidos. La mayoría ya paró.`
+      : `📊 Racha de ${G.streak} días — lo estás construyendo.`), 2000);
+    return;
+  }
+  let msg = null, delay = 1800, followUp = null;
+  if (p.sessions === 0) {
+    msg      = `📌 No has tocado ${p.em} ${p.lbl} todavía.`;
+    followUp = `→ Una sesión hoy lo cambia.`;
+    if (!state.perf[weakest.id]) state.perf[weakest.id] = {correct:0,total:0,ignored:0,topics:{}};
+    state.perf[weakest.id].ignored++; persistPerf();
+  } else if (p.avgScore != null && p.avgScore < 0.7) {
+    const esc = p.ignored;
+    if (esc === 0)      { msg = `⚠️ ${p.lbl} es tu punto más débil — ${Math.round(p.avgScore*100)}% promedio. Es corregible.`; followUp = `→ Haz una sesión de ${p.lbl} hoy.`; }
+    else if (esc === 1) { msg = `⚠️ ${p.lbl} sigue siendo débil. Esto está empezando a importar.`; followUp = `→ Una sesión enfocada cambia el número.`; }
+    else                { msg = `🚨 Estás evitando ${p.lbl}. Eso es riesgoso.`; followUp = `→ Esta es la unidad. Hazlo ahora.`; }
+    if (!state.perf[weakest.id]) state.perf[weakest.id] = {correct:0,total:0,ignored:0,topics:{}};
+    state.perf[weakest.id].ignored++; persistPerf();
+  } else if (p.daysSince >= 4) {
+    msg = `📅 ${p.lbl} fue hace ${p.daysSince} días. El español se olvida rápido.`;
+    followUp = `→ Una sesión rápida lo mantiene fresco.`;
+  }
+  if (msg) setTimeout(() => { axieEnqueue(msg); if (followUp) axieEnqueue(followUp); }, delay);
+}
+
+function renderHeroFullBar() {
+  const G = state.xp, xpEl = $('xp'); if (!xpEl) return;
+  xpEl.innerHTML = `<div class="xp-top"><span>${getTier(G.lv)} · Nivel ${G.lv}</span><span style="color:var(--accent)">¡SUBISTE!</span></div>
+    <div class="xp-track"><div class="xp-fill" style="width:100%;background:linear-gradient(90deg,${state.accent},#ff6b6b)"></div></div>`;
+  setTimeout(() => renderHero(), 400);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFETTI
+// ─────────────────────────────────────────────────────────────────────────────
+function launchConfetti(type = 'big') {
+  const config = {small:20, medium:40, big:70};
+  const count  = config[type] || 70;
+  const cols   = ['#e05c5c','#4fc3f7','#a78bfa','#34d399','#fb7185','#ffd700','#ff8c42','#fff'];
+  for (let i = 0; i < count; i++) {
+    const size = type === 'small' ? 5 : 7;
+    const el = document.createElement('div'); el.className = 'cf';
+    el.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}vw;background:${cols[Math.floor(Math.random()*cols.length)]};transform:rotate(${Math.random()*360}deg);animation-duration:${1.4+Math.random()*2}s;animation-delay:${Math.random()*.6}s`;
+    document.body.appendChild(el); setTimeout(() => el.remove(), 3800);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+const $    = id => document.getElementById(id);
+const e    = s  => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const bold = s  => e(s).replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--txt)">$1</strong>');
+
+function showToast(msg) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2100);
+}
+
+function ring(pct, col, sz=38) {
+  const r=14, c=2*Math.PI*r, d=c*(pct/100), g=c-d;
+  return `<div class="ring" style="width:${sz}px;height:${sz}px">
+    <svg width="${sz}" height="${sz}" viewBox="0 0 34 34">
+      <circle cx="17" cy="17" r="${r}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="3"/>
+      <circle cx="17" cy="17" r="${r}" fill="none" stroke="${col}" stroke-width="3" stroke-dasharray="${d} ${g}" stroke-linecap="round"/>
+    </svg><div class="ring-n" style="color:${col}">${pct}%</div></div>`;
+}
+
+function upct(uid) { return Math.min(100, Math.round((state.sessions.filter(s=>s.unit?.id===uid).length/3)*100)); }
+
+function uNavBar(activeId) {
+  return `<div class="unav">${UNITS.map(u => {
+    const on = activeId===u.id, cnt = state.sessions.filter(s=>s.unit?.id===u.id).length;
+    return `<button class="unav-btn${on?' on':''}" onclick="jumpUnit(${u.id})" style="${on?`border-top-color:${u.col};color:${u.col}`:''}">
+      <span class="unav-n">${u.em}</span><span>${cnt?cnt+'s':''}</span></button>`;
+  }).join('')}</div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AXIE
+// ─────────────────────────────────────────────────────────────────────────────
+const AXIE_LINES = [
+  '¡Ánimo! Sigues mejorando 🎓','Cada tarjeta = más confianza ⚡','¡Lo vas a lograr! 🏆',
+  'Owl siempre cree en ti 🦉','El español es hermoso — te lo prometo 🤓',
+  'Hoy sabes más que ayer 🧠','¡Buen trabajo al venir hoy! ✨',
+  'La práctica hace al maestro 💪','¡Qué buena sesión! 🌟',
+];
+
+function axieTap() {
+  const m = $('axie-msg'); if (!m) return;
+  m.textContent = AXIE_LINES[state.axIdx++ % AXIE_LINES.length];
+  m.classList.add('on'); clearTimeout(axieQ._at);
+  axieQ._at = setTimeout(() => m.classList.remove('on'), AXIE_DURATION);
+}
+function axieSay(msg) {
+  const m = $('axie-msg'); if (!m) return;
+  m.textContent = msg; m.classList.add('on'); clearTimeout(axieQ._at);
+  axieQ._at = setTimeout(() => m.classList.remove('on'), AXIE_DURATION);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUOTES — Spanish/Latin thinkers
+// ─────────────────────────────────────────────────────────────────────────────
+const QUOTES = [
+  {q:'El que no sabe idiomas no sabe nada de lenguas.',a:'Goethe',b:''},
+  {q:'Los límites de mi lenguaje son los límites de mi mundo.',a:'Ludwig Wittgenstein',b:'Tractatus'},
+  {q:'Una lengua diferente es una visión diferente de la vida.',a:'Federico Fellini',b:''},
+  {q:'Aprender otro idioma no es solo aprender palabras diferentes para las mismas cosas, sino aprender otra forma de pensar.',a:'Flora Lewis',b:''},
+  {q:'El lenguaje es el vestido de los pensamientos.',a:'Samuel Johnson',b:''},
+  {q:'Hablar con fluidez en otro idioma es como tener un alma nueva.',a:'Carlos V',b:''},
+  {q:'La gramática, que sabe gobernar incluso a los reyes.',a:'Molière',b:''},
+  {q:'Una persona que nunca cometió un error nunca intentó nada nuevo.',a:'Albert Einstein',b:''},
+  {q:'El conocimiento de las lenguas es la puerta a la sabiduría.',a:'Roger Bacon',b:''},
+  {q:'Aprender un idioma es tener una ventana más desde la cual observar el mundo.',a:'Proverbio chino',b:''},
+];
+
+function injectQuote() {
+  const old = $('qfooter'); if (old) old.remove();
+  const q = QUOTES[state.qIdx];
+  const div = document.createElement('div');
+  div.innerHTML = `<div style="border-top:1px solid var(--bdr);padding:22px 24px;background:linear-gradient(180deg,transparent,rgba(224,92,92,.015));max-width:860px;margin:0 auto" id="qfooter">
+    <div style="display:flex;gap:12px;align-items:flex-start">
+      <div style="font-size:28px;color:var(--accent);opacity:.25;line-height:1;flex-shrink:0">"</div>
+      <div>
+        <div style="font-size:13px;color:var(--soft);line-height:1.8;font-style:italic;margin-bottom:8px">${e(q.q)}</div>
+        <div style="font-family:monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mut)">— <span style="color:var(--accent)">${e(q.a)}</span>${q.b?` · <em>${e(q.b)}</em>`:''}</div>
+        <button style="background:none;border:none;font-family:monospace;font-size:9px;letter-spacing:1px;color:var(--mut);cursor:pointer;padding:0;margin-top:5px;text-transform:uppercase" onclick="nextQuote()">siguiente cita →</button>
+      </div>
+    </div></div>`;
+  $('app').after(div.firstChild);
+}
+function nextQuote() { state.qIdx = (state.qIdx+1) % QUOTES.length; injectQuote(); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────────────────────────────────
+function render() {
+  renderHero();
+  switch (state.page) {
+    case 'home':  return renderHome();
+    case 'new':   return renderNew();
+    case 'study': return renderStudy();
+    case 'unit':  return renderUnit();
+    case 'setup': return renderSetup(state._setupErr);
+  }
+}
+
+function setApp(html) { $('app').innerHTML = html; injectQuote(); }
+
+function renderHero() {
+  const G       = state.xp;
+  const realPct = Math.round(G.xp / xpNeeded(G.lv) * 100);
+  const pct     = Math.min(95, realPct);
+  const bonusTxt= G.streak >= 2 ? ` · 🔥 +${Math.round(G.streak*5)}% XP` : '';
+  const statsEl = $('stats');
+  if (statsEl) statsEl.innerHTML =
+    `<div class="stat">🔥 <b>${G.streak}</b> día racha</div>
+     <div class="stat">⭐ <b>${getTier(G.lv)}</b> · Nv ${G.lv}</div>
+     <div class="stat">📚 <b>${state.sessions.length}</b> sesiones</div>
+     <div class="stat">🃏 <b>${G.cards}</b> tarjetas</div>`;
+  const xpEl = $('xp');
+  if (xpEl) xpEl.innerHTML =
+    `<div class="xp-top"><span>${getTier(G.lv)} · Nivel ${G.lv}${bonusTxt}</span><span>${G.xp} / ${xpNeeded(G.lv)}</span></div>
+     <div class="xp-track"><div class="xp-fill" style="width:${pct}%;background:linear-gradient(90deg,${state.accent},#ff6b6b)"></div></div>`;
+  if (G.last !== new Date().toDateString() && G.streak > 0) {
+    if (!window._streakWarnFired) {
+      window._streakWarnFired = true;
+      setTimeout(() => axieSay('⚠️ Tu racha está en riesgo — 1 sesión la salva'), 1200);
+    }
+  } else { window._streakWarnFired = false; window._pressureFired = false; }
+  renderAdaptivePressure();
+}
+
+function setAccent(c) {
+  state.accent = c; localStorage.setItem('habla-accent', c);
+  document.documentElement.style.setProperty('--accent', c);
+  document.documentElement.style.setProperty('--c1', c);
+  renderHero();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────────────────────────────────
+function goHome(htab) {
+  if (state.page === 'study') setTimeout(() => axieSay('⚡ Una sesión más = +2x impulso'), 800);
+  state.page = 'home'; if (htab) state.htab = htab; render();
+}
+function goNew()      { state.page = 'new';   render(); }
+function goStudy(idx) { state.page = 'study'; state.curIdx = idx; resetSession(); render(); }
+function goUnit(id)   {
+  if (state.focusUnit === id) state.focusUnit = null;
+  state.page = 'unit'; state.unitId = id; render();
+}
+function jumpUnit(id) {
+  const i = state.sessions.findIndex(s => s.unit?.id === id);
+  if (i >= 0) goStudy(i); else goUnit(id);
+}
+
+function resetSession() {
+  state.tab = 'vocab'; state.fcIdx = 0; state.fcFlipped = false; state.chatH = [];
+  state.quiz      = { picks:{}, checked:{}, score:0, total:0, _answers:[], _explanations:[] };
+  state.drillQuiz = { picks:{}, checked:{}, score:0, total:0 };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// API
+// ─────────────────────────────────────────────────────────────────────────────
+async function callClaude(msgs, sys) {
+  if (!state.apiKey) {
+    state.page = 'setup'; state._setupErr = 'Ingresa tu API key para continuar.'; render();
+    throw new Error('no-key');
+  }
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{'content-type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body: JSON.stringify({ model:MODEL, max_tokens:4000, system:sys, messages:msgs })
+  });
+  if (r.status === 401) {
+    localStorage.removeItem('habla-key'); state.apiKey = '';
+    state.page = 'setup'; state._setupErr = '❌ API key inválida — reingresa desde console.anthropic.com'; render();
+    throw new Error('401');
+  }
+  if (!r.ok) throw new Error(`API ${r.status}`);
+  return (await r.json()).content.filter(b=>b.type==='text').map(b=>b.text).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SETUP
+// ─────────────────────────────────────────────────────────────────────────────
+function renderSetup(err='') {
+  state._setupErr = '';
+  setApp(`<div class="setup fadein">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:52px">🦉</div>
+      <div style="font-family:monospace;font-size:26px;font-weight:900;color:var(--accent);letter-spacing:2px;margin-top:8px">HABLA</div>
+      <div style="font-size:12px;color:var(--mut);margin-top:3px">Spanish 4 Honors · powered by Axie 🦉</div>
+    </div>
+    ${err?`<div style="background:rgba(251,113,133,.08);border:1px solid rgba(251,113,133,.3);border-radius:6px;padding:10px 14px;color:var(--c5);font-size:12px;margin-bottom:14px">${e(err)}</div>`:''}
+    <div class="setup-steps">
+      <strong style="color:var(--c2)">Cómo obtener tu Anthropic API key:</strong><br>
+      1. Ve a <a href="https://console.anthropic.com" target="_blank" style="color:var(--c2)">console.anthropic.com</a><br>
+      2. Clic en <strong style="color:var(--txt)">API Keys → Create Key</strong><br>
+      3. Cópiala — empieza con <code style="color:var(--accent);font-size:11px">sk-ant-api03-</code><br>
+      4. Pégala abajo y toca Guardar
+    </div>
+    <div class="lbl" style="margin-bottom:8px">Tu Anthropic API Key</div>
+    <input id="ki" type="password" placeholder="sk-ant-api03-..." style="width:100%;padding:11px 14px;font-size:13px;border-radius:6px;border:1px solid var(--bdr2);background:var(--surf);color:var(--txt);outline:none;font-family:monospace;margin-bottom:12px"/>
+    <button class="btn-hi btn-full" onclick="saveKey()">Guardar y lanzar HABLA 🚀</button>
+    <div id="ke" class="err"></div>
+    <p style="font-size:11px;color:var(--mut);text-align:center;margin-top:12px">Solo guardado en este dispositivo.</p>
+  </div>`);
+}
+
+function saveKey() {
+  const k = $('ki')?.value?.trim();
+  if (!k || !k.startsWith('sk-')) { $('ke').textContent = 'Por favor ingresa una key válida'; return; }
+  state.apiKey = k; localStorage.setItem('habla-key', k);
+  checkStreak(); axieSay('¡Bienvenida! Vamos a trabajar 🦉'); goHome();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HOME
+// ─────────────────────────────────────────────────────────────────────────────
+function renderHome() {
+  setApp(`<div class="tabbar">
+    <button class="tab${state.htab==='sessions'?' on':''}" onclick="state.htab='sessions';renderHomeContent()">Sesiones</button>
+    <button class="tab${state.htab==='units'?' on':''}" onclick="state.htab='units';renderHomeContent()">Unidades</button>
+  </div>
+  <div class="page fadein" id="hcontent"></div>`);
+  setTimeout(renderHomeContent, 0);
+}
+
+function renderHomeContent() {
+  document.querySelectorAll('.tab').forEach((b,i) =>
+    b.classList.toggle('on', (i===0&&state.htab==='sessions')||(i===1&&state.htab==='units')));
+  const el = $('hcontent'); if (!el) return;
+  el.innerHTML = state.htab === 'sessions' ? renderSessions() : renderUnitTiles();
+}
+
+function renderSessions() {
+  let out = `<button class="btn-hi btn-full" onclick="goNew()" style="margin-bottom:22px">+ Nueva Sesión ✨</button>`;
+  if (!state.sessions.length) return out + `<div class="card fadein" style="text-align:center;padding:3rem 2rem">
+    <div style="font-size:52px;margin-bottom:14px">🦉</div>
+    <div style="font-size:16px;color:var(--mid);margin-bottom:8px;font-weight:600">¡Axie espera tu primera sesión!</div>
+    <div style="font-size:13px;color:var(--mut)">Pega el texto de una lección y empieza ahora.</div>
+  </div>`;
+  for (const u of UNITS) {
+    const us = state.sessions.map((s,i)=>({s,i})).filter(({s})=>s.unit?.id===u.id);
+    if (!us.length) continue;
+    out += `<div class="sh"><span class="sh-n" style="color:${u.col}">0${u.id}</span><span class="sh-t" style="color:${u.col}">${u.em} ${u.lbl}</span></div>`;
+    out += us.map(({s,i}) => `<div class="scard fadein" style="border-color:${u.col}" onclick="goStudy(${i})">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:14px;color:var(--txt);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e(s.title)}</div>
+        <div class="lbl">${e(s.date)} · ${s.vocab?.length||0} palabras · ${s.quiz?.length||0} preguntas</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+        ${ring(upct(u.id),u.col,34)}
+        <button class="btn btn-del" onclick="event.stopPropagation();delSession(${i})">✕</button>
+      </div>
+    </div>`).join('');
+  }
+  out += `<div style="margin-top:36px;text-align:center;padding-top:16px;border-top:1px solid var(--bdr)">
+    <button class="btn" style="font-size:11px;color:var(--mut);border-color:transparent" onclick="resetApiKey()">Cambiar API key</button>
+  </div>`;
+  return out;
+}
+
+function renderUnitTiles() {
+  return `<div style="margin-bottom:16px">
+    <div class="lbl" style="margin-bottom:5px">6 Unidades · Spanish 4 Honors / AP Spanish</div>
+    <div style="font-size:13px;color:var(--soft)">Toca cualquier unidad para el resumen completo.</div>
+  </div>
+  <div class="ugrid">${UNITS.map(u => {
+    const cnt = state.sessions.filter(s=>s.unit?.id===u.id).length;
+    const pct = upct(u.id);
+    return `<div class="utile scalein" onclick="goUnit(${u.id})"
+      style="${state.focusUnit===u.id?`box-shadow:0 0 0 2px ${u.col},0 0 18px ${u.col}40;`:''}">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${u.col};border-radius:8px 8px 0 0"></div>
+      <div class="utile-ghost" style="color:${u.col}">0${u.id}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+        <div class="lbl" style="color:${u.col}">Unidad ${u.id}</div>${ring(pct,u.col,30)}
+      </div>
+      <div style="font-size:14px;font-weight:600;color:var(--txt);line-height:1.3;margin-bottom:4px">${u.em} ${u.lbl}</div>
+      <div style="font-size:11px;color:var(--mut)">Peso: <strong style="color:${u.col}">${u.ex}</strong></div>
+      <div style="margin-top:8px;font-size:10px;${cnt?`color:${u.col};background:${u.col}15;border:1px solid ${u.col}25;border-radius:3px;padding:2px 8px;display:inline-block`:'color:var(--mut)'}">
+        ${cnt ? cnt+' sesión'+(cnt>1?'es':'') : 'Sin sesiones aún'}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function delSession(i) { state.sessions.splice(i,1); persistSessions(); goHome(); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UNIT OVERVIEW
+// ─────────────────────────────────────────────────────────────────────────────
+function renderUnit() {
+  const id = state.unitId, u = UNITS[id-1];
+  if (!u) { goHome(); return; }
+  const us = state.sessions.map((s,i)=>({s,i})).filter(({s})=>s.unit?.id===id);
+  setApp(`<div class="tabbar"><button class="tab on" style="color:${u.col};border-bottom-color:${u.col}">${u.em} Unidad ${id} — ${u.lbl}</button></div>
+  <div class="page has-unav fadein">
+    <button class="btn" onclick="goHome('units')" style="font-size:12px;margin-bottom:18px">← Unidades</button>
+    <div style="display:flex;align-items:baseline;gap:14px;padding-bottom:12px;border-bottom:1px solid var(--bdr);margin-bottom:18px">
+      <span style="font-family:monospace;font-size:48px;font-weight:900;color:${u.col};opacity:.1;line-height:1">0${id}</span>
+      <div>
+        <div class="lbl" style="color:${u.col};margin-bottom:3px">Unidad ${id} de 6 · Peso: ${u.ex}</div>
+        <div style="font-family:monospace;font-size:17px;font-weight:800;color:var(--txt)">${u.em} ${u.lbl.toUpperCase()}</div>
+      </div>
+    </div>
+    <div class="lbl" style="margin-bottom:12px">Tus Sesiones</div>
+    ${us.length
+      ? us.map(({s,i})=>`<div class="scard" style="border-color:${u.col}" onclick="goStudy(${i})">
+          <div><div style="font-weight:600;font-size:14px;color:var(--txt);margin-bottom:3px">${e(s.title)}</div>
+          <div class="lbl">${e(s.date)} · ${s.vocab?.length||0} palabras</div></div>
+        </div>`).join('')
+      : `<div class="card" style="text-align:center;padding:1.5rem;color:var(--mut);font-size:13px">Sin sesiones. <a onclick="goNew()" style="color:${u.col};cursor:pointer">Agregar →</a></div>`}
+  </div>
+  ${uNavBar(id)}`);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NEW SESSION
+// ─────────────────────────────────────────────────────────────────────────────
+function renderNew() {
+  setApp(`<div class="tabbar"><button class="tab on">✨ Nueva Sesión</button></div>
+  <div class="page fadein">
+    <button class="btn" onclick="goHome()" style="font-size:12px;margin-bottom:18px">← Atrás</button>
+    <div style="margin-bottom:16px">
+      <div class="lbl" style="color:var(--c2);margin-bottom:8px">Nueva Sesión</div>
+      <div style="font-family:monospace;font-size:19px;font-weight:800;letter-spacing:2px;color:var(--txt)">PEGA TU TEXTO</div>
+      <div style="font-size:13px;color:var(--soft);margin-top:5px">Notas de clase, lección de libro de texto, lista de vocabulario — cualquier texto en español o sobre español.</div>
+    </div>
+    <textarea id="tx" placeholder="Pega aquí el texto de tu lección o apuntes..." style="width:100%;min-height:240px;padding:14px;font-size:14px;border-radius:6px;border:1px solid var(--bdr2);background:var(--surf);color:var(--txt);resize:vertical;outline:none;line-height:1.65"></textarea>
+    <div style="margin-top:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <button class="btn-hi" onclick="doGen()" id="gb">Generar Materiales 🚀</button>
+      <div id="gl" style="display:none;align-items:center;gap:8px;font-size:13px;color:var(--soft)"><div class="spin"></div><span>Axie está analizando tu texto…</span></div>
+      <div id="ge" class="err"></div>
+    </div>
+  </div>`);
+}
+
+async function doGen() {
+  const tx = $('tx')?.value?.trim(); if (!tx) return;
+  $('gb').disabled = true; $('gl').style.display = 'flex'; $('ge').textContent = '';
+  try {
+    const sys = `You are an expert Spanish 4 Honors / AP Spanish teacher. Given a lesson text, respond ONLY with valid JSON — no markdown fences:
+{"title":"concise Spanish title","summary":"2-3 sentence plain-English summary of what was covered","unit_hint":"one of: presente, pretérito, imperfecto, subjuntivo, por_para, vocabulario, ap_writing","vocab":[{"word":"Spanish word/phrase","definition":"English meaning","example":"example sentence in Spanish","gender":"m/f/n","type":"noun/verb/adj/adv/phrase"}],"grammar":{"rules":[{"name":"rule name","explanation":"clear explanation with **bold** key terms","examples":["Spanish example — English translation"]}],"conjugation_table":{"verb":"infinitive or null","tenses":["present","preterite","imperfect","subjunctive"],"forms":{"yo":"","tú":"","él":"","nosotros":"","vosotros":"","ellos":""}}},"flashcards":[{"term":"Spanish","definition":"English","hint":"memory tip"}],"quiz":[{"question":"question text","options":["A) ...","B) ...","C) ...","D) ..."],"answer":"A","explanation":"why correct","topic":"snake_case_topic"}],"mnemonics":[{"word":"Spanish word","trick":"memory trick in English"}]}
+Rules: 8-12 vocab items. 1-3 grammar rules. 6-8 flashcards. 5 quiz questions (answer=single letter). 3-4 mnemonics. conjugation_table only if lesson covers verb conjugation (else null).`;
+    const raw    = await callClaude([{role:'user',content:`Lesson text:\n${tx.slice(0,6000)}`}], sys);
+    const parsed = JSON.parse(raw.replace(/^```json|^```|```$/gm,'').trim());
+    const s      = { id:Date.now(), date:new Date().toISOString(), transcript:tx, ...parsed };
+    s.unit = detectUnit(s);
+    state.sessions.unshift(s);
+    persistSessions(); checkStreak();
+    state.xp.sess++; persistXP();
+    addXP(50, '¡Nueva sesión!');
+    launchConfetti();
+    const cnt = sessionsToday();
+    setTimeout(() => axieSay(cnt >= 2
+      ? `⚡ ${cnt} sesiones hoy — ¡impulso activo!`
+      : '🔥 ¡Nueva sesión desbloqueada — a practicar!'), 400);
+    goStudy(0);
+  } catch(err) {
+    if (err.message !== '401' && err.message !== 'no-key') $('ge').textContent = 'Error: '+err.message;
+    $('gb').disabled = false; $('gl').style.display = 'none';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STUDY PAGE
+// ─────────────────────────────────────────────────────────────────────────────
+const TABS = [['vocab','Vocab'],['grammar','Grammar'],['flashcards','Tarjetas'],['quiz','Quiz'],['chat','Axie Chat']];
+
+function renderStudy() {
+  const s = cur(); if (!s) { goHome(); return; }
+  const u = s.unit || UNITS[4];
+  setApp(`<div class="tabbar">${TABS.map(([id,lbl]) =>
+    `<button class="tab${state.tab===id?' on':''}" onclick="switchTab('${id}')">${lbl}</button>`
+  ).join('')}</div>
+  <div class="page has-unav fadein">
+    <div style="padding-bottom:16px;border-bottom:1px solid var(--bdr);margin-bottom:20px">
+      <button class="btn" onclick="goHome()" style="font-size:11px;margin-bottom:10px">← Sesiones</button>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;flex-wrap:wrap">
+        <span style="font-family:monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${u.col};background:${u.col}15;border:1px solid ${u.col}25;padding:3px 8px;border-radius:2px">${u.em} Unidad ${u.id} — ${u.lbl}</span>
+      </div>
+      <div style="font-family:monospace;font-size:16px;font-weight:800;letter-spacing:.5px;color:var(--txt);line-height:1.25;margin-bottom:8px">${e(s.title?.toUpperCase())}</div>
+      <p style="font-size:13px;color:var(--soft);line-height:1.65;max-width:500px">${e(s.summary)}</p>
+    </div>
+    <div id="tc" class="fadein"></div>
+  </div>
+  ${uNavBar(u.id)}`);
+  setTimeout(renderTab, 0);
+}
+
+function switchTab(t) {
+  state.tab = t;
+  state.quiz      = { picks:{}, checked:{}, score:0, total:0, _answers:[], _explanations:[] };
+  state.drillQuiz = { picks:{}, checked:{}, score:0, total:0 };
+  document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('on', TABS[i]?.[0] === t));
+  const tc = $('tc'); if (tc) { tc.className = 'fadein'; renderTab(); }
+}
+
+function renderTab() {
+  const el = $('tc'); if (!el) return;
+  const s  = cur();  if (!s)  return;
+  state.fcIdx = Math.min(state.fcIdx, (s.flashcards?.length||1)-1);
+  if      (state.tab === 'vocab')      el.innerHTML = renderVocab(s);
+  else if (state.tab === 'grammar')    el.innerHTML = renderGrammar(s);
+  else if (state.tab === 'flashcards') el.innerHTML = renderFC(s.flashcards);
+  else if (state.tab === 'quiz')       el.innerHTML = renderQuiz(s.quiz);
+  else if (state.tab === 'chat')       el.innerHTML = renderChat();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// VOCAB TAB
+// ─────────────────────────────────────────────────────────────────────────────
+function renderVocab(s) {
+  const vocab = s.vocab || [];
+  if (!vocab.length) return '<p style="color:var(--mut)">No hay vocabulario en esta sesión.</p>';
+  const mnems = s.mnemonics || [];
+  const memMap = {};
+  mnems.forEach(m => { memMap[m.word?.toLowerCase()] = m.trick; });
+
+  return `<div style="margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <div class="lbl">${vocab.length} palabras</div>
+    <div style="display:flex;gap:6px">
+      <button class="btn" style="font-size:11px" onclick="speakAll()">🔊 Escuchar todo</button>
+    </div>
+  </div>
+  <div class="g2">
+    ${vocab.map((v,i) => {
+      const trick = memMap[v.word?.toLowerCase()];
+      return `<div class="card card-hi fadein" style="border-top-color:${ac(i)};padding:14px 16px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div>
+            <div style="font-size:18px;font-weight:700;color:var(--txt);line-height:1.2">${e(v.word)}</div>
+            ${v.gender?`<div style="font-family:monospace;font-size:9px;color:${ac(i)};margin-top:1px">${e(v.gender==='m'?'masc.':v.gender==='f'?'fem.':v.gender)}</div>`:''}
+          </div>
+          <button onclick="speak('${v.word?.replace(/'/g,"\\'")}')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--mut);padding:2px 4px;border-radius:4px;transition:color .15s" onmouseenter="this.style.color='var(--txt)'" onmouseleave="this.style.color='var(--mut)'">🔊</button>
+        </div>
+        <div style="font-size:13px;color:var(--soft);margin-bottom:6px">${e(v.definition)}</div>
+        ${v.example?`<div style="font-size:11px;color:var(--mut);font-style:italic;border-top:1px solid var(--bdr);padding-top:7px;margin-top:7px;line-height:1.55">💬 ${e(v.example)}</div>`:''}
+        ${trick?`<div style="font-size:11px;color:${ac(i)};background:${ac(i)}10;border-radius:3px;padding:5px 8px;margin-top:8px">🧠 ${e(trick)}</div>`:''}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function speak(word) {
+  if (!('speechSynthesis' in window)) { axieSay('Tu navegador no soporta texto a voz'); return; }
+  const utt = new SpeechSynthesisUtterance(word);
+  utt.lang = 'es-ES'; utt.rate = 0.85;
+  window.speechSynthesis.speak(utt);
+}
+
+function speakAll() {
+  const s = cur(); if (!s?.vocab) return;
+  let i = 0;
+  const next = () => {
+    if (i >= s.vocab.length) return;
+    const utt = new SpeechSynthesisUtterance(s.vocab[i++].word);
+    utt.lang = 'es-ES'; utt.rate = 0.8;
+    utt.onend = () => setTimeout(next, 600);
+    window.speechSynthesis.speak(utt);
+  };
+  next();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GRAMMAR TAB
+// ─────────────────────────────────────────────────────────────────────────────
+function renderGrammar(s) {
+  const g = s.grammar;
+  if (!g) return '<p style="color:var(--mut)">No hay gramática en esta sesión.</p>';
+
+  const rules = (g.rules||[]).map((r,i) => `
+    <div class="card card-hi fadein" style="border-top-color:${ac(i)};margin-bottom:14px">
+      <div class="lbl" style="color:${ac(i)};margin-bottom:7px">${e(r.name)}</div>
+      <p style="font-size:13px;color:var(--soft);line-height:1.8;margin-bottom:10px">${bold(r.explanation)}</p>
+      ${(r.examples||[]).map(ex => `<div style="font-family:monospace;font-size:12px;background:rgba(0,0,0,.3);border-left:3px solid ${ac(i)};padding:7px 12px;margin-bottom:5px;border-radius:0 4px 4px 0;color:${ac(i)}">${e(ex)}</div>`).join('')}
+    </div>`).join('');
+
+  let conjTable = '';
+  if (g.conjugation_table && g.conjugation_table.verb) {
+    const ct = g.conjugation_table;
+    const pros = ['yo','tú','él','nosotros','vosotros','ellos'];
+    conjTable = `<div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--bdr)">
+      <div class="lbl" style="margin-bottom:10px">Conjugación: <span style="color:var(--accent)">${e(ct.verb)}</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        ${(ct.tenses||[]).map(t => `<span style="font-family:monospace;font-size:9px;color:var(--c2);background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.2);padding:2px 9px;border-radius:2px">${e(t)}</span>`).join('')}
+      </div>
+      <div class="conj-grid">
+        ${pros.map(p => `<div class="conj-cell">
+          <div class="conj-pro">${p}</div>
+          <div class="conj-form">${e(ct.forms?.[p]||'—')}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  return `<div class="lbl" style="margin-bottom:14px">Reglas Gramaticales</div>
+  ${rules}${conjTable}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FLASHCARD TAB
+// ─────────────────────────────────────────────────────────────────────────────
+function renderFC(cards) {
+  if (!cards?.length) return '<p style="color:var(--mut)">No hay tarjetas.</p>';
+  const fc = cards[state.fcIdx], a = ac(state.fcIdx);
+  const pct = Math.round(((state.fcIdx+1)/cards.length)*100);
+  return `<div style="margin-bottom:18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+      <div class="lbl">Tarjeta ${state.fcIdx+1} de ${cards.length}</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span class="lbl" style="color:${a}">${pct}%</span>
+        <button class="btn" onclick="shuffleFC()" style="font-size:11px;padding:4px 10px;color:var(--mut)">🔀 Mezclar</button>
+      </div>
+    </div>
+    <div style="height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;margin-bottom:18px">
+      <div style="height:100%;width:${pct}%;background:${a};border-radius:2px;transition:width .4s"></div>
+    </div>
+  </div>
+  <div class="fc-scene" onclick="flipFC()" style="border-top:3px solid ${a};border-radius:8px">
+    <div class="fc-inner${state.fcFlipped?' flipped':''}" id="fci">
+      <div class="fc-face">
+        <div class="lbl" style="color:${a};margin-bottom:14px">Toca para voltear →</div>
+        <p style="font-size:24px;font-weight:700;color:var(--txt);line-height:1.3;margin:0">${e(fc.term)}</p>
+        <div style="margin-top:18px;font-size:32px">🤔</div>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="lbl" style="color:${a};margin-bottom:10px">${e(fc.term)}</div>
+        <p style="font-size:16px;color:var(--mid);line-height:1.75;margin:0">${e(fc.definition)}</p>
+        ${fc.hint?`<p style="font-size:12px;color:var(--mut);font-style:italic;margin-top:14px;border-top:1px solid var(--bdr);padding-top:12px;line-height:1.6">🧠 ${e(fc.hint)}</p>`:''}
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:16px;margin-bottom:14px">
+    <button class="btn" onclick="prevFC()" ${state.fcIdx===0?'disabled':''} style="flex:1;padding:12px;font-size:17px">←</button>
+    <button class="btn-hi" onclick="nextFC()" ${state.fcIdx===cards.length-1?'disabled':''} style="flex:1;padding:12px;font-size:17px">→</button>
+  </div>
+  <div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap">
+    ${cards.map((_,i) => `<div onclick="goFC(${i})" style="width:${i===state.fcIdx?'18px':'7px'};height:7px;border-radius:4px;background:${i===state.fcIdx?a:'var(--bdr2)'};cursor:pointer;transition:all .25s"></div>`).join('')}
+  </div>`;
+}
+
+function flipFC() {
+  state.fcFlipped = !state.fcFlipped;
+  const el = $('fci'); if (el) el.classList.toggle('flipped', state.fcFlipped);
+  if (state.fcFlipped) { state.xp.cards++; addXP(5,'¡Tarjeta! 🃏'); }
+}
+function nextFC()    { state.fcFlipped=false; state.fcIdx=Math.min(state.fcIdx+1,(cur()?.flashcards?.length||1)-1); renderTab(); }
+function prevFC()    { state.fcFlipped=false; state.fcIdx=Math.max(state.fcIdx-1,0); renderTab(); }
+function goFC(i)     { state.fcFlipped=false; state.fcIdx=i; renderTab(); }
+function shuffleFC() { const s=cur(); if(!s?.flashcards) return; s.flashcards.sort(()=>Math.random()-.5); state.fcFlipped=false; state.fcIdx=0; renderTab(); axieSay('¡Mezclado! ¡Sigue! 🦉'); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUIZ TAB
+// ─────────────────────────────────────────────────────────────────────────────
+function renderQuiz(quiz) {
+  const questions = quiz || [];
+  state.quiz = {
+    picks:{}, checked:{}, score:0, total:questions.length,
+    _answers:      questions.map(q => q.answer || ''),
+    _explanations: questions.map(q => q.explanation || '')
+  };
+  return `<div style="display:flex;justify-content:space-between;margin-bottom:16px;align-items:center">
+    <div class="lbl">${questions.length} Preguntas 📝</div>
+    <div id="qs" class="lbl" style="color:var(--accent)"></div>
+  </div>
+  ${questions.map((q,i) => `
+    <div class="card fadein" style="border-left:3px solid ${ac(i)};margin-bottom:13px;padding:16px 18px">
+      <p style="font-weight:600;font-size:14px;color:var(--txt);line-height:1.55;margin-bottom:12px">${i+1}. ${e(q.question)}</p>
+      <div>${(q.options||[]).map((opt,oi) => `<div id="op-${i}-${oi}" class="qopt" onclick="pickQ(${i},${oi})">${e(opt)}</div>`).join('')}</div>
+      <button class="btn-hi" id="cb-${i}" style="display:none;margin-top:10px;font-size:12px;padding:7px 18px" onclick="checkQ(${i})">Verificar ✓</button>
+      <div id="ex-${i}" style="display:none;font-size:12px;color:var(--soft);border-top:1px solid var(--bdr);padding-top:10px;margin-top:10px;line-height:1.75"></div>
+    </div>`).join('')}`;
+}
+
+function pickQ(qi, oi) {
+  if (state.quiz.checked[qi] === true) return;
+  const l = 'ABCD'[oi]; if (!l) return;
+  state.quiz.picks[qi] = l;
+  for (let k = 0; k < 4; k++) {
+    const el = document.getElementById(`op-${qi}-${k}`); if (!el) continue;
+    const x = 'ABCD'[k];
+    el.style.background  = x===l ? 'rgba(79,195,247,.09)' : 'transparent';
+    el.style.borderColor = x===l ? '#4fc3f7' : 'var(--bdr)';
+    el.style.color       = x===l ? '#4fc3f7' : 'var(--soft)';
+  }
+  const b = document.getElementById(`cb-${qi}`); if (b) b.style.display = 'inline-block';
+}
+
+function checkQ(qi) {
+  if (state.quiz.checked[qi] === true) return;
+  state.quiz.checked[qi] = true;
+  const correct = state.quiz._answers[qi];
+  const enc     = encodeURIComponent(state.quiz._explanations[qi] || '');
+  const ch      = state.quiz.picks[qi];
+  const ok      = ch === correct;
+  if (ok) { state.quiz.score++; launchConfetti('small'); }
+
+  // Perf tracking
+  const s = cur(), uid = s?.unit?.id;
+  if (uid != null) {
+    if (!state.perf[uid]) state.perf[uid] = {correct:0,total:0,ignored:0,topics:{}};
+    const p = state.perf[uid];
+    p.total++; if (ok) p.correct++;
+    const topic = s.quiz?.[qi]?.topic;
+    if (topic) {
+      if (!p.topics[topic]) p.topics[topic] = {correct:0,total:0};
+      p.topics[topic].total++; if (ok) p.topics[topic].correct++;
+    }
+    persistPerf();
+    if (p.total >= 5 && (p.correct/p.total) > 0.7) { p.ignored = 0; persistPerf(); }
+  }
+
+  for (let k = 0; k < 4; k++) {
+    const el = document.getElementById(`op-${qi}-${k}`); if (!el) continue;
+    const x = 'ABCD'[k];
+    if (x===correct)        { el.style.background='rgba(52,211,153,.09)'; el.style.borderColor='#34d399'; el.style.color='#34d399'; }
+    else if (x===ch && !ok) { el.style.background='rgba(251,113,133,.09)'; el.style.borderColor='#fb7185'; el.style.color='#fb7185'; }
+    el.classList.add('locked');
+  }
+  const b  = document.getElementById(`cb-${qi}`);  if (b)  b.style.display = 'none';
+  const ex = document.getElementById(`ex-${qi}`);  if (ex) { ex.style.display='block'; ex.innerHTML=(ok?'✅ ':'❌ ')+e(decodeURIComponent(enc)); }
+
+  addXP(ok?15:5, ok?'¡Correcto! 🎯':'¡Buen intento!');
+  const answered = Object.keys(state.quiz.checked).length;
+  const qs = document.getElementById('qs'); if (qs) qs.textContent = `${state.quiz.score}/${answered} correctas`;
+
+  if (answered === state.quiz.total) {
+    state.xp.quizzes = (state.xp.quizzes||0)+1; persistXP();
+    setTimeout(() => {
+      if (state.quiz.score === state.quiz.total) { launchConfetti('big'); axieSay('🎉 ¡Perfecto! ¡Lo lograste!'); }
+      else if (state.quiz.score >= state.quiz.total*.8) axieSay(`${state.quiz.score}/${state.quiz.total} — ¡Casi perfecto! 🌟`);
+      else axieSay(`${state.quiz.score}/${state.quiz.total} — Repasa los errores 💪`);
+    }, 400);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CHAT TAB
+// ─────────────────────────────────────────────────────────────────────────────
+function renderChat() {
+  state.chatH = [];
+  return `<div class="lbl" style="margin-bottom:13px">🦉 Pregúntale a Axie</div>
+  <div id="cm" style="display:flex;flex-direction:column;gap:11px;min-height:80px;margin-bottom:14px">
+    <div class="card fadein" style="border-left:3px solid var(--c3);padding:13px 16px">
+      <p style="margin:0;font-size:13px;color:var(--soft);line-height:1.65">¡Pregúntame lo que sea sobre esta lección o el español en general! Respuestas cortas y claras. 🦉</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <input id="ci" placeholder="Pregúntale a Axie…" onkeydown="if(event.key==='Enter')doChat()" style="flex:1;padding:11px 14px;font-size:13px;border-radius:6px;border:1px solid var(--bdr2);background:var(--surf);color:var(--txt);outline:none"/>
+    <button class="btn-hi" onclick="doChat()" style="padding:11px 18px">Preguntar 🦉</button>
+  </div>
+  <div id="cb2" style="display:none;font-size:11px;color:var(--mut);font-style:italic;margin-top:7px">Axie está pensando…</div>`;
+}
+
+function fmtChat(t) {
+  return t.split('\n').filter(l=>l.trim()).map(l=>{
+    const b = l.trim().startsWith('-')||l.trim().startsWith('•')||l.trim().startsWith('*');
+    return b
+      ? `<div class="cbline"><span class="arr">▸</span><span style="font-size:13px;color:var(--mid);line-height:1.65">${e(l.replace(/^[-•*]\s*/,''))}</span></div>`
+      : `<p style="margin:0 0 5px;font-size:13px;color:var(--mid);line-height:1.65">${e(l)}</p>`;
+  }).join('');
+}
+
+async function doChat() {
+  const inp=$('ci'); const msg=inp?.value?.trim(); if(!msg)return;
+  inp.value='';
+  state.chatH.push({role:'user',content:msg});
+  const cm=$('cm');
+  cm.innerHTML+=`<div style="display:flex;justify-content:flex-end"><div class="bubble-u fadein">${e(msg)}</div></div>`;
+  const busy=$('cb2'); if(busy)busy.style.display='block';
+  try {
+    const sys=`You are Axie, a friendly Spanish 4 Honors tutor owl 🦉 helping a high school student named CoCo. Give SHORT answers — max 4 bullet points, each under 20 words. One direct sentence first, then bullets. Mix English and Spanish naturally. Be warm and encouraging. If asked for a word or phrase, give it in Spanish with pronunciation tip. Current lesson: ${cur()?.summary}`;
+    const rep=await callClaude(state.chatH,sys);
+    state.chatH.push({role:'assistant',content:rep});
+    cm.innerHTML+=`<div style="display:flex;justify-content:flex-start;gap:8px;align-items:flex-start">
+      <span style="font-size:18px;flex-shrink:0;margin-top:2px">🦉</span>
+      <div class="bubble-a fadein">${fmtChat(rep)}</div>
+    </div>`;
+    addXP(5,'¡Pregunta hecha!');
+  } catch(err) { cm.innerHTML+=`<div style="color:var(--c5);font-size:12px">${e(err.message)}</div>`; }
+  if(busy)busy.style.display='none';
+  cm.scrollTop=cm.scrollHeight;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  renderHero();
+  if (!state.apiKey) { state.page='setup'; render(); }
+  else { checkStreak(); render(); }
+  setInterval(renderHero, 60000);
+  setTimeout(axieTap, 2400);
+});
+</script>
+</body>
+</html>
